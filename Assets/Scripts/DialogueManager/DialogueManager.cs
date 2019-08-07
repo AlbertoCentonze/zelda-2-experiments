@@ -6,7 +6,18 @@ using TMPro;
 public class DialogueManager : MonoBehaviour
 {
     private Queue<string> sentences;
+    private TextMeshProUGUI sentenceText;
+    private TextMeshProUGUI nameText;
+    private Animator animator;
+    private PlayerRPGCore playerData;
 
+    private void Awake()
+    {
+        playerData = GameObject.FindWithTag("Player").GetComponent<PlayerRPGCore>();
+        sentenceText = GameObject.Find("SentenceText").GetComponent<TextMeshProUGUI>();
+        nameText = GameObject.Find("NameText").GetComponent<TextMeshProUGUI>();
+        animator = GetComponent<Animator>();
+    }
 
     void Start()
     {
@@ -15,15 +26,15 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
-        Debug.Log("Starting conversation with " + dialogue.name);
-
+        animator.SetBool("IsOpen", true);
         sentences.Clear();
-
+        
         foreach (string sentence in dialogue.sentences)
         {
             sentences.Enqueue(sentence);
         }
 
+        nameText.text = dialogue.name;
         DisplayNextSentence();
     }
 
@@ -35,24 +46,34 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        playerData.busy = true;
         string sentence = sentences.Dequeue();
         StopAllCoroutines();
+        Debug.Log(sentence);
         StartCoroutine(TypeSentence(sentence));
     }
 
     IEnumerator TypeSentence(string sentence)
     {
-        //text = "";
+        sentenceText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
-            //text += letter;
+            sentenceText.text += letter;
             yield return null;
         }
     }
 
     void EndDialogue()
     {
-        Debug.Log("End of conversation.");
-        //insert disappear animation
+        animator.SetBool("IsOpen", false);
+        playerData.busy = false;
+    }
+
+    private void Update()
+    {
+        if (playerData.busy && Input.GetKeyDown(KeyCode.E))
+        {
+            DisplayNextSentence();
+        }
     }
 }

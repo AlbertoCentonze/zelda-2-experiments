@@ -8,7 +8,7 @@ public class PlayerMovement2D : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     [Range(1, 100)] public float runSpeed = 40f;
-    private bool isJumping = false;
+    public bool isJumping = false;
     private bool isCrouching = false;
 
 
@@ -61,4 +61,5 @@ public class PlayerMovement2D : MonoBehaviour
     {
         animator.SetFloat("VerticalVelocity", 0);
     }
+
 }
