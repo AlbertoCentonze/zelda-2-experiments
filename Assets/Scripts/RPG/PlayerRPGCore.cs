@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class PlayerRPGCore : MonoBehaviour
 {
-    public string name;
+    public string playerName;
     public int level;
     public int actualHealth;
-    [HideInInspector] public int maxHealth = 100;
-    public int healthIncreaseMultiplier = 1;
+    public int maxHealth = 100;
+    private int healthIncrease;
+    public int damage = 50;
+    public int damageIncreaseMultiplier = 1;
     [HideInInspector] public bool busy = false;
-    [HideInInspector] public int xp;
-
+    public int xp;
 
     private void Start()
     {
         actualHealth = maxHealth;
+        healthIncrease = maxHealth / 10;
     }
 
     private void Update()
@@ -24,14 +26,37 @@ public class PlayerRPGCore : MonoBehaviour
         {
             LevelUp();
         }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            Save();
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Load();
+        }
     }
 
     private void LevelUp()
     {
         level++;
         xp = 0;
-        maxHealth += 10 * healthIncreaseMultiplier;
+        maxHealth += healthIncrease;
         actualHealth = maxHealth;
-        Debug.Log(name + "reached level" + level);
+        damage += 10;
+        Debug.Log(playerName + " reached level " + level);
+    }
+
+    private void Save()
+    {
+        SaveSystem.SavePlayer(this);
+    }
+
+    private void Load()
+    {
+        PlayerData data = SaveSystem.LoadPlayer();
+
+        playerName = data.playerName;
+        level = data.level;
     }
 }

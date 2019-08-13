@@ -69,7 +69,7 @@ public class DialogueManager : MonoBehaviour
         playerData.busy = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (playerData.busy && Input.GetKeyDown(KeyCode.E))
         {

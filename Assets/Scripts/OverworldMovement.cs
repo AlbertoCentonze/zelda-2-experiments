@@ -4,24 +4,23 @@ using UnityEngine;
 
 public class OverworldMovement : MonoBehaviour
 {
-    private Transform player;
-    [SerializeField] private float speed = 5f; 
+    private Rigidbody2D playerBody;
+    [SerializeField] private float speed = 5f;
+    Vector2 direction;
 
     void Awake()
     {
-        player = GetComponent<Transform>();
+        playerBody = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == - 1)
-        {
-            player.position = new Vector3(speed * Time.deltaTime * Input.GetAxisRaw("Horizontal"), player.position.y, player.position.z);
-        }
-        else if (Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
-        {
-            player.position = new Vector3(player.position.x, speed * Time.deltaTime * Input.GetAxisRaw("Vertical"), player.position.z);
-        }
+        direction.x = Input.GetAxisRaw("Horizontal");
+        direction.y = Input.GetAxisRaw("Vertical");
+    }
+
+    void FixedUpdate()
+    {
+        playerBody.MovePosition(playerBody.position + direction * speed * Time.fixedDeltaTime);
     }
 }
